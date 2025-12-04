@@ -1,0 +1,65 @@
+ <!DOCTYPE html>
+<html>
+<head>
+    <title>色彩搭配系统</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        h1 { color: #333; }
+        .input-group { margin: 20px 0; }
+        input, button { padding: 10px; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <h1>🎨 智能色彩搭配系统</h1>
+    <p>输入关键词生成配色方案：</p>
+    
+    <div class="input-group">
+        <input type="text" id="keywords" placeholder="输入关键词...">
+        <button onclick="generateColors()">生成配色</button>
+    </div>
+    
+    <div id="results"></div>
+    
+    <script>
+        async function generateColors() {
+            const keywords = document.getElementById('keywords').value;
+            const results = document.getElementById('results');
+            
+            results.innerHTML = '<p>正在生成...</p>';
+            
+            try {
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ keywords })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    let html = '<h2>生成的配色方案：</h2>';
+                    data.schemes.forEach(scheme => {
+                        html += `
+                            <div style="margin: 20px; padding: 15px; border: 1px solid #ccc;">
+                                <h3>${scheme.name}</h3>
+                                <div style="display: flex; height: 50px;">
+                                    <div style="flex: 1; background-color: ${scheme.primary}"></div>
+                                    <div style="flex: 1; background-color: ${scheme.secondary1}"></div>
+                                    <div style="flex: 1; background-color: ${scheme.secondary2}"></div>
+                                    <div style="flex: 1; background-color: ${scheme.accent}"></div>
+                                </div>
+                                <p>${scheme.description}</p>
+                            </div>
+                        `;
+                    });
+                    results.innerHTML = html;
+                } else {
+                    results.innerHTML = `<p style="color: red;">错误: ${data.error}</p>`;
+                }
+            } catch (error) {
+                results.innerHTML = `<p style="color: red;">请求失败: ${error}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
