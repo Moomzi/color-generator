@@ -109,3 +109,6 @@ def generate():
 
 # Vercel需要这个
 app = app
+@app.route('/health')
+def health():
+    return jsonify({"status": "ok"}), 200
