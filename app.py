@@ -2,11 +2,15 @@ import os
 from flask import Flask, render_template, request, jsonify
 import requests
 import json
+from dotenv import load_dotenv
 
-app = Flask(__name__)
+# 加载环境变量
+load_dotenv()
 
-# DeepSeek API配置（你需要替换成自己的API Key）
-DEEPSEEK_API_KEY = "sk-5c4a3ba374a74d5285a79dd5fc3c2a52"  # 替换这里
+app = Flask(__name__, static_folder='static', template_folder='templates')
+
+# DeepSeek API配置（从环境变量获取）
+DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
 API_URL = "https://api.deepseek.com/v1/chat/completions"
 
 def generate_color_prompt(keywords):
@@ -42,7 +46,7 @@ def generate_color_prompt(keywords):
 """
 
 @app.route('/')
-def home():
+def index():
     """主页"""
     return render_template('index.html')
 
@@ -98,6 +102,10 @@ def generate():
     except Exception as e:
         return jsonify({"success": False, "error": str(e)})
 
-if __name__ == '__main__':
-    port = int(os.environ.get("PORT",5001))
-    app.run(host='0.0.0.0',port=port,debug=False)
+# 删除或注释掉以下所有代码：
+# if __name__ == '__main__':
+#     port = int(os.environ.get("PORT", 5001))
+#     app.run(host='0.0.0.0', port=port, debug=False)
+
+# Vercel需要这个
+app = app
