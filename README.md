@@ -19,7 +19,7 @@
 - 后端：Python + Flask
 - 前端：HTML + CSS + JavaScript
 - AI：DeepSeek API
-- 部署：Replit
+- 部署：未在部署中
 
 ## 作者
 设计学大一学生 - Moontree
